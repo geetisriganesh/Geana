@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geana | Accessible Communication</title>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --primary: #5146e5;
+      --border: #d8deea;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      padding: 24px 12px;
+    }
+
+    header h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 4px;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 22px;
+      margin: 18px 0;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    button, select, textarea, input {
+      font: inherit;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      margin: 5px 0;
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      font-weight: bold;
+    }
+
+    button:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 4px solid #f4b942;
+      outline-offset: 3px;
+    }
+
+    .message-button {
+      background: #e9e8ff;
+      color: #27205f;
+      border-color: #c8c4ff;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      background: var(--card);
+      color: var(--text);
+    }
+
+    #preview {
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 20px;
+      min-height: 90px;
+      overflow-wrap: anywhere;
+      margin-top: 14px;
+      background: var(--card);
+    }
+
+    .sizes button {
+      background: #ffffff;
+      color: #252044;
+      border-color: #aaa4e9;
+    }
+
+    .high-contrast {
+      --bg: #000000;
+      --card: #000000;
+      --text: #ffffff;
+      --primary: #ffff00;
+      --border: #ffffff;
+    }
+
+    .high-contrast button {
+      color: #000000;
+      background: #ffff00;
+      border-color: #ffff00;
+    }
+
+    .dark-mode {
+      --bg: #151821;
+      --card: #222733;
+      --text: #ffffff;
+      --primary: #aaa2ff;
+      --border: #545b6d;
+    }
+
+    .dark-mode .sizes button,
+    .dark-mode .message-button {
+      background: #353047;
+      color: #ffffff;
+      border-color: #aaa2ff;
+    }
+
+    .dark-mode textarea,
+    .dark-mode select {
+      background: #222733;
+      color: #ffffff;
+    }
+
+    .status {
+      font-weight: bold;
+      min-height: 24px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      button, select {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Geana</h1>
+    <p>Communication and accessibility for everyone.</p>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="helpTitle">
+      <h2 id="helpTitle">Quick Assistance</h2>
+      <p>Choose an option to communicate your needs.</p>
+
+      <button onclick="showQuickMessage('I need help, please.')">
+        I Need Help
+      </button>
+
+      <button onclick="showQuickMessage('I cannot speak. Please read my message.')">
+        I Cannot Speak
+      </button>
+
+      <button onclick="callEmergency()">
+        Emergency Call — 112
+      </button>
+
+      <p id="quickStatus" class="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card" aria-labelledby="builderTitle">
+      <h2 id="builderTitle">Build My Message</h2>
+
+      <p>Choose a phrase to add to your message:</p>
+
+      <button class="message-button"
+        onclick="addPhrase('I need water.')">
+        I need water
+      </button>
+
+      <button class="message-button"
+        onclick="addPhrase('Please help me.')">
+        Please help me
+      </button>
+
+      <button class="message-button"
+        onclick="addPhrase('I am uncomfortable.')">
+        I am uncomfortable
+      </button>
+
+      <button class="message-button"
+        onclick="addPhrase('Please contact my caregiver.')">
+        Contact my caregiver
+      </button>
+
+      <label for="message">
+        <strong>Edit your message:</strong>
+      </label>
+
+      <textarea id="message"
+        placeholder="Type or build your message here..."
+        aria-describedby="messageHelp"></textarea>
+
+      <p id="messageHelp">
+        Select your preferred text size before displaying your message.
+      </p>
+
+      <h3>Choose display text size</h3>
+
+      <div class="sizes" role="group"
+        aria-label="Message display size">
+        <button onclick="setTextSize('16px')">Small</button>
+        <button onclick="setTextSize('22px')">Medium</button>
+        <button onclick="setTextSize('30px')">Large</button>
+        <button onclick="setTextSize('40px')">Extra Large</button>
+      </div>
+
+      <button onclick="showMessage()">Show Message</button>
+      <button onclick="speakMessage()">Read Aloud</button>
+      <button onclick="copyMessage()">Copy Message</button>
+      <button onclick="clearMessage()">Clear</button>
+
+      <h3>Your message preview</h3>
+
+      <div id="preview" role="status" aria-live="polite">
+        Your message will appear here.
+      </div>
+
+      <p id="actionStatus" class="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle">Accessibility Settings</h2>
+
+      <button onclick="toggleContrast()">
+        High Contrast
+      </button>
+
+      <button onclick="toggleDarkMode()">
+        Dark Mode
+      </button>
+
+      <p>These settings help users choose a comfortable display.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Geana — Making communication more accessible.</p>
+  </footer>
+
+  <script>
+    let displaySize = "22px";
+
+    function showQuickMessage(message) {
+      document.getElementById("message").value = message;
+      showMessage();
+    }
+
+    function addPhrase(phrase) {
+      const input = document.getElementById("message");
+
+      input.value = input.value.trim()
+        ? input.value.trim() + " " + phrase
+        : phrase;
+
+      input.focus();
+    }
+
+    function setTextSize(size) {
+      displaySize = size;
+
+      document.getElementById("preview").style.fontSize =
+        displaySize;
+
+      document.getElementById("actionStatus").textContent =
+        "Display text size updated.";
+    }
+
+    function showMessage() {
+      const message =
+        document.getElementById("message").value.trim();
+
+      const preview = document.getElementById("preview");
+
+      preview.textContent = message ||
+        "Please enter a message first.";
+
+      preview.style.fontSize = displaySize;
+
+      document.getElementById("actionStatus").textContent =
+        message ? "Message displayed successfully." :
+        "Your message is empty.";
+    }
+
+    function speakMessage() {
+      const message =
+        document.getElementById("message").value.trim();
+
+      if (!message) {
+        document.getElementById("actionStatus").textContent =
+          "Please enter a message to read aloud.";
+        return;
+      }
+
+      if (!("speechSynthesis" in window)) {
+        document.getElementById("actionStatus").textContent =
+          "Text-to-speech is not supported in this browser.";
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const speech = new SpeechSynthesisUtterance(message);
+      speech.lang = "en-IN";
+
+      window.speechSynthesis.speak(speech);
+
+      document.getElementById("actionStatus").textContent =
+        "Reading your message aloud.";
+    }
+
+    async function copyMessage() {
+      const message =
+        document.getElementById("message").value.trim();
+
+      if (!message) {
+        document.getElementById("actionStatus").textContent =
+          "Please enter a message to copy.";
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(message);
+
+        document.getElementById("actionStatus").textContent =
+          "Message copied.";
+      } catch (error) {
+        document.getElementById("actionStatus").textContent =
+          "Copy is unavailable. Please select and copy the text manually.";
+      }
+    }
+
+    function clearMessage() {
+      document.getElementById("message").value = "";
+      document.getElementById("preview").textContent =
+        "Your message will appear here.";
+
+      document.getElementById("actionStatus").textContent =
+        "Message cleared.";
+    }
+
+    function toggleContrast() {
+      document.body.classList.toggle("high-contrast");
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    function callEmergency() {
+      const confirmed = confirm(
+        "Open your phone app to call India's emergency number 112?"
+      );
+
+      if (confirmed) {
+        window.location.href = "tel:112";
+      }
+    }
+  </script>
+</body>
+</html>
