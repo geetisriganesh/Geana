@@ -1,397 +1,1126 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geana | Accessible Communication</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#087b99">
+<title>Geana — Accessible Emergency Companion</title>
 
-  <style>
-    :root {
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --text: #172033;
-      --primary: #5146e5;
-      --border: #d8deea;
-    }
+<style>
+:root {
+  --ink:#102a43;
+  --muted:#526779;
+  --paper:#f5f8fb;
+  --card:#fff;
+  --line:#d7e1e8;
+  --teal:#087b99;
+  --focus:#ffbf47;
+  --size:1;
+  --gap:12px;
+}
 
-    * {
-      box-sizing: border-box;
-    }
+* { box-sizing:border-box; }
 
-    body {
-      margin: 0;
-      padding: 24px;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+body {
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:calc(16px * var(--size))/1.5 system-ui,sans-serif;
+}
 
-    header {
-      text-align: center;
-      padding: 24px 12px;
-    }
+button,input,select,textarea { font:inherit; }
+button,a,select,input,textarea { touch-action:manipulation; }
+button { cursor:pointer; }
 
-    header h1 {
-      color: var(--primary);
-      font-size: 2.5rem;
-      margin-bottom: 4px;
-    }
+button:focus-visible,a:focus-visible,
+input:focus-visible,select:focus-visible,
+textarea:focus-visible {
+  outline:3px solid var(--focus);
+  outline-offset:3px;
+}
 
-    main {
-      max-width: 850px;
-      margin: auto;
-    }
+header {
+  max-width:1100px;
+  margin:auto;
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
 
-    .card {
-      background: var(--card);
-      padding: 22px;
-      margin: 18px 0;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-    }
+.brand {
+  font-weight:900;
+  font-size:1.55rem;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
 
-    button, select, textarea, input {
-      font: inherit;
-      padding: 12px;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      margin: 5px 0;
-    }
+.logo {
+  display:inline-grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:#e0f5fb;
+  color:var(--teal);
+  font-size:24px;
+}
 
-    button {
-      cursor: pointer;
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      font-weight: bold;
-    }
+.wrap {
+  max-width:1100px;
+  margin:auto;
+  padding:8px 20px 32px;
+}
 
-    button:focus-visible,
-    textarea:focus-visible,
-    select:focus-visible {
-      outline: 4px solid #f4b942;
-      outline-offset: 3px;
-    }
+.intro { margin:12px 0 20px; }
+.intro h1 { font-size:clamp(1.7rem,4vw,2.5rem); }
+.muted { color:var(--muted); }
+.small { font-size:.85rem; }
 
-    .message-button {
-      background: #e9e8ff;
-      color: #27205f;
-      border-color: #c8c4ff;
-    }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:var(--gap);
+}
 
-    textarea {
-      width: 100%;
-      min-height: 100px;
-      background: var(--card);
-      color: var(--text);
-    }
+.action {
+  min-height:145px;
+  border:0;
+  border-radius:18px;
+  padding:18px;
+  color:#fff;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:10px;
+  box-shadow:0 4px 12px #17324d12;
+}
 
-    #preview {
-      border: 2px solid var(--primary);
-      border-radius: 12px;
-      padding: 20px;
-      min-height: 90px;
-      overflow-wrap: anywhere;
-      margin-top: 14px;
-      background: var(--card);
-    }
+.action .ico { font-size:2rem; }
+.action strong { font-size:1.06rem; }
+.action small { font-size:.8rem; }
 
-    .sizes button {
-      background: #ffffff;
-      color: #252044;
-      border-color: #aaa4e9;
-    }
+.red { background:#c92536; }
+.blue { background:#1266c5; }
+.green { background:#168354; }
+.purple { background:#6941b5; }
+.orange { background:#c66a0b; }
+.teal { background:#087e8b; }
 
-    .high-contrast {
-      --bg: #000000;
-      --card: #000000;
-      --text: #ffffff;
-      --primary: #ffff00;
-      --border: #ffffff;
-    }
+.card {
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin-top:16px;
+  box-shadow:0 4px 16px #17324d08;
+}
 
-    .high-contrast button {
-      color: #000000;
-      background: #ffff00;
-      border-color: #ffff00;
-    }
+.card h2,.card h3 { margin:0 0 8px; }
+.card h2 { font-size:1.45rem; }
 
-    .dark-mode {
-      --bg: #151821;
-      --card: #222733;
-      --text: #ffffff;
-      --primary: #aaa2ff;
-      --border: #545b6d;
-    }
+.btnrow {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
 
-    .dark-mode .sizes button,
-    .dark-mode .message-button {
-      background: #353047;
-      color: #ffffff;
-      border-color: #aaa2ff;
-    }
+.btn {
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:10px 14px;
+  background:#fff;
+  color:var(--ink);
+  font-weight:700;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
 
-    .dark-mode textarea,
-    .dark-mode select {
-      background: #222733;
-      color: #ffffff;
-    }
+.btn.primary {
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal);
+}
 
-    .status {
-      font-weight: bold;
-      min-height: 24px;
-    }
+.btn.danger {
+  background:#c92536;
+  color:#fff;
+}
 
-    footer {
-      text-align: center;
-      padding: 24px;
-    }
+.btn.full { width:100%; }
+.screen { display:none; }
+.screen.active { display:block; }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 12px;
-      }
+.field {
+  display:block;
+  font-weight:750;
+  margin-top:14px;
+}
 
-      header h1 {
-        font-size: 2rem;
-      }
+.field input,.field textarea,.field select {
+  display:block;
+  width:100%;
+  margin-top:5px;
+  padding:11px;
+  border:1px solid #b9c9d5;
+  border-radius:10px;
+  background:var(--card);
+  color:var(--ink);
+}
 
-      .card {
-        padding: 16px;
-      }
+textarea { resize:vertical; }
 
-      button, select {
-        max-width: 100%;
-      }
-    }
-  </style>
+.tiles {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:12px;
+}
+
+.tile {
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  background:#f8fbfd;
+  color:var(--ink);
+  text-align:left;
+  font-weight:650;
+}
+
+.message {
+  margin-top:14px;
+  padding:20px;
+  border-radius:14px;
+  background:#dcf8e8;
+  color:#075c3b;
+  font-size:1.35rem;
+  font-weight:800;
+  overflow-wrap:anywhere;
+  white-space:pre-wrap;
+}
+
+.status {
+  margin-top:12px;
+  padding:12px;
+  border-radius:11px;
+  background:#eef5f8;
+  color:var(--ink);
+  font-size:.9rem;
+}
+
+.nav {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:20px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+
+.nav button {
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:var(--muted);
+  padding:8px 3px;
+  font-size:.8rem;
+}
+
+.nav button.active {
+  background:#e1f4f8;
+  color:#075f77;
+  font-weight:800;
+}
+
+.nav span {
+  display:block;
+  font-size:1.3rem;
+}
+
+.notice {
+  font-size:.78rem;
+  color:var(--muted);
+  line-height:1.55;
+  margin-top:16px;
+}
+
+.options {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+
+.options button { flex:1; min-width:80px; }
+
+.options button.selected {
+  background:var(--teal);
+  color:#fff;
+  border-color:var(--teal);
+}
+
+.callbox { text-align:center; padding:20px 0; }
+
+.callnumber {
+  font-size:clamp(3rem,10vw,5rem);
+  font-weight:950;
+  color:#c92536;
+}
+
+.rowcheck {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:12px;
+}
+
+.rowcheck input { width:20px; height:20px; }
+
+body.dark {
+  --ink:#f2f7fb;
+  --muted:#c0cfdb;
+  --paper:#0f1b27;
+  --card:#172838;
+  --line:#3c5367;
+}
+
+body.dark .tile,
+body.dark .btn:not(.primary):not(.danger),
+body.dark .field input,
+body.dark .field textarea,
+body.dark .field select {
+  background:#203447;
+  color:var(--ink);
+  border-color:#50677b;
+}
+
+body.dark .status {
+  background:#203447;
+  color:var(--ink);
+}
+
+body.high { filter:contrast(1.22); }
+body.high .muted { color:var(--ink); }
+
+@media(min-width:650px) {
+  .grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .tiles { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .action { min-height:165px; }
+}
+
+@media(max-width:360px) {
+  .wrap { padding-left:12px; padding-right:12px; }
+  .action { padding:12px; min-height:128px; }
+  header { padding:12px; }
+}
+</style>
 </head>
 
 <body>
-  <header>
-    <h1>Geana</h1>
-    <p>Communication and accessibility for everyone.</p>
-  </header>
+<header>
+  <div class="brand">
+    <span class="logo" aria-hidden="true">⬡</span> Geana
+  </div>
+  <button class="btn" id="settingsTop">⚙ Settings</button>
+</header>
 
-  <main>
-    <section class="card" aria-labelledby="helpTitle">
-      <h2 id="helpTitle">Quick Assistance</h2>
-      <p>Choose an option to communicate your needs.</p>
+<main class="wrap">
 
-      <button onclick="showQuickMessage('I need help, please.')">
-        I Need Help
-      </button>
+<section class="screen active" id="home">
+  <div class="intro">
+    <h1>Hello! 👋</h1>
+    <div class="muted">How would you like to communicate today?</div>
+  </div>
 
-      <button onclick="showQuickMessage('I cannot speak. Please read my message.')">
-        I Cannot Speak
-      </button>
+  <div class="grid">
+    <button class="action red" data-go="emergency">
+      <span class="ico">☎</span>
+      <strong>1. Emergency Call</strong>
+      <small>India emergency number · 112</small>
+    </button>
 
-      <button onclick="callEmergency()">
-        Emergency Call — 112
-      </button>
+    <button class="action blue" data-go="help">
+      <span class="ico">✋</span>
+      <strong>2. I Need Help</strong>
+      <small>Show or speak a help message</small>
+    </button>
 
-      <p id="quickStatus" class="status" aria-live="polite"></p>
-    </section>
+    <button class="action green" data-go="silent">
+      <span class="ico">🔇</span>
+      <strong>3. I Cannot Speak</strong>
+      <small>Communicate using text</small>
+    </button>
 
-    <section class="card" aria-labelledby="builderTitle">
-      <h2 id="builderTitle">Build My Message</h2>
+    <button class="action purple" data-go="caregiver">
+      <span class="ico">♧</span>
+      <strong>4. Contact My Caregiver</strong>
+      <small>Call or prepare a message</small>
+    </button>
 
-      <p>Choose a phrase to add to your message:</p>
+    <button class="action orange" data-go="builder">
+      <span class="ico">▤</span>
+      <strong>5. Build My Message</strong>
+      <small>Combine custom phrases</small>
+    </button>
 
-      <button class="message-button"
-        onclick="addPhrase('I need water.')">
-        I need water
-      </button>
+    <button class="action teal" data-go="sign">
+      <span class="ico">🤟</span>
+      <strong>6. Sign & Communicate</strong>
+      <small>Sign-language support</small>
+    </button>
+  </div>
 
-      <button class="message-button"
-        onclick="addPhrase('Please help me.')">
-        Please help me
-      </button>
+  <div class="card">
+    <h2>Quick messages</h2>
+    <p class="muted">Tap a phrase to display it and choose whether to speak it aloud.</p>
 
-      <button class="message-button"
-        onclick="addPhrase('I am uncomfortable.')">
-        I am uncomfortable
-      </button>
+    <div class="tiles">
+      <button class="tile quick" data-msg="Please help me. I need assistance.">🆘 Please help me</button>
+      <button class="tile quick" data-msg="I need some water, please.">💧 Water please</button>
+      <button class="tile quick" data-msg="I am in pain. Please get help.">💚 I am in pain</button>
+      <button class="tile quick" data-msg="Please give me my medicine.">💊 My medicine</button>
+    </div>
 
-      <button class="message-button"
-        onclick="addPhrase('Please contact my caregiver.')">
-        Contact my caregiver
-      </button>
+    <div class="btnrow">
+      <button class="btn primary" id="voiceBtn">🎙 Voice assistant</button>
+      <button class="btn" data-go="settings">Accessibility settings</button>
+    </div>
 
-      <label for="message">
-        <strong>Edit your message:</strong>
-      </label>
+    <div class="status" id="voiceStatus" role="status" aria-live="polite">
+      Voice input depends on browser support and microphone permission.
+    </div>
+  </div>
+</section>
 
-      <textarea id="message"
-        placeholder="Type or build your message here..."
-        aria-describedby="messageHelp"></textarea>
+<section class="screen" id="emergency">
+  <div class="card">
+    <button class="btn back">← Back</button>
+    <div class="callbox">
+      <div style="font-size:3rem">☎</div>
+      <h1>Emergency Call</h1>
+      <p class="muted">India's national emergency number</p>
+      <div class="callnumber">112</div>
+    </div>
+    <a class="btn danger full" href="tel:112">☎ Call 112 now</a>
+    <div class="status">
+      This opens your phone app. Confirm and place the call yourself.
+      This website cannot verify that a call connects.
+    </div>
+  </div>
+</section>
 
-      <p id="messageHelp">
-        Select your preferred text size before displaying your message.
-      </p>
+<section class="screen" id="help">
+  <div class="card">
+    <button class="btn back">← Back</button>
+    <h2>I Need Help</h2>
 
-      <h3>Choose display text size</h3>
+    <label class="field" for="helpText">
+      Edit your message
+      <textarea id="helpText" rows="3">I need help. Please come and assist me.</textarea>
+    </label>
 
-      <div class="sizes" role="group"
-        aria-label="Message display size">
-        <button onclick="setTextSize('16px')">Small</button>
-        <button onclick="setTextSize('22px')">Medium</button>
-        <button onclick="setTextSize('30px')">Large</button>
-        <button onclick="setTextSize('40px')">Extra Large</button>
+    <div class="btnrow">
+      <button class="btn primary" id="showHelp">Show message</button>
+      <button class="btn" id="audioHelp">🔊 Speak message</button>
+    </div>
+
+    <div class="message" id="helpPreview" aria-live="polite">
+      I need help. Please come and assist me.
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="silent">
+  <div class="card">
+    <button class="btn back">← Back</button>
+    <h2>I Cannot Speak</h2>
+    <p class="muted">Type a message or choose a quick phrase.</p>
+
+    <label class="field" for="silentText">
+      Your message
+      <textarea id="silentText" rows="3">I cannot speak. Please communicate with me using this screen.</textarea>
+    </label>
+
+    <div class="btnrow">
+      <button class="btn primary" id="showSilent">Show message</button>
+      <button class="btn" id="audioSilent">🔊 Play audio</button>
+    </div>
+
+    <div class="message" id="silentPreview" aria-live="polite">
+      I cannot speak. Please communicate with me using this screen.
+    </div>
+
+    <div class="tiles">
+      <button class="tile phrase" data-msg="Please call for help.">Please call for help</button>
+      <button class="tile phrase" data-msg="Please speak slowly.">Please speak slowly</button>
+      <button class="tile phrase" data-msg="I need some water.">I need water</button>
+      <button class="tile phrase" data-msg="Please wait a moment.">Please wait</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="caregiver">
+  <div class="card">
+    <button class="btn back">← Back</button>
+    <h2>Contact My Caregiver</h2>
+
+    <p class="muted">Enter a trusted contact. Calls and messages require your device to complete the action.</p>
+
+    <label class="field" for="careName">
+      Contact name (optional)
+      <input id="careName" type="text" placeholder="Parent or caregiver">
+    </label>
+
+    <label class="field" for="carePhone">
+      Phone number
+      <input id="carePhone" type="tel" placeholder="Enter a trusted contact number">
+    </label>
+
+    <label class="field" for="careMessage">
+      Message
+      <textarea id="careMessage" rows="3">I need your help. Please contact me as soon as possible.</textarea>
+    </label>
+
+    <div class="btnrow">
+      <button class="btn primary" id="careCall">☎ Call contact</button>
+      <button class="btn" id="careSMS">Open SMS app</button>
+      <button class="btn" id="careCopySMS">Copy message text</button>
+    </div>
+
+    <div class="status" id="careStatus" role="status">
+      Open SMS to review and send, or copy the message text if your messaging app does not fill it in.
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="builder">
+  <div class="card">
+    <button class="btn back">← Back</button>
+    <h2>Build My Message</h2>
+    <p class="muted">Tap phrases to combine them, then edit the message if needed.</p>
+
+    <div class="tiles" id="buildTiles">
+      <button class="tile" data-build="I need help">🆘 I need help</button>
+      <button class="tile" data-build="I cannot speak">🔇 I cannot speak</button>
+      <button class="tile" data-build="Please call my caregiver">♧ Call caregiver</button>
+      <button class="tile" data-build="I need water">💧 I need water</button>
+      <button class="tile" data-build="I am in pain">💚 I am in pain</button>
+      <button class="tile" data-build="I need my medicine">💊 I need medicine</button>
+      <button class="tile" data-build="Please go slowly">🐢 Please go slowly</button>
+      <button class="tile" data-build="Yes, please">✓ Yes, please</button>
+      <button class="tile" data-build="No, thank you">✕ No, thank you</button>
+    </div>
+
+    <label class="field" for="buildText">
+      Your message
+      <textarea id="buildText" rows="4" placeholder="Select phrases or type your own message..."></textarea>
+    </label>
+
+    <div class="field" id="messageSizeControls">
+      Message text size
+      <div class="options">
+        <button class="btn" data-message-size="medium">Medium text</button>
+        <button class="btn" data-message-size="small">Small text</button>
+        <button class="btn" data-message-size="large">Large text</button>
       </div>
+    </div>
 
-      <button onclick="showMessage()">Show Message</button>
-      <button onclick="speakMessage()">Read Aloud</button>
-      <button onclick="copyMessage()">Copy Message</button>
-      <button onclick="clearMessage()">Clear</button>
+    <div class="btnrow">
+      <button class="btn primary" id="buildShow">Show message</button>
+      <button class="btn" id="buildAudio">🔊 Speak</button>
+      <button class="btn" id="buildCopy">Copy</button>
+      <button class="btn" id="buildClear">Clear all</button>
+    </div>
 
-      <h3>Your message preview</h3>
-
-      <div id="preview" role="status" aria-live="polite">
-        Your message will appear here.
+    <div class="field" id="displaySizeControls">
+      Choose the text size for the displayed message
+      <div class="options">
+        <button class="btn" data-display-size="small">Small text</button>
+        <button class="btn" data-display-size="medium">Medium text</button>
+        <button class="btn" data-display-size="large">Large text</button>
+        <button class="btn" data-display-size="xlarge">Extra large text</button>
       </div>
+      <p class="muted small">For low vision, choose Large or Extra large.</p>
+    </div>
 
-      <p id="actionStatus" class="status" aria-live="polite"></p>
-    </section>
+    <div class="message" id="buildPreview" aria-live="polite">
+      Your message will appear here.
+    </div>
+    <div class="status" id="retentionStatus">
+      Messages stay visible until you dismiss or replace them.
+    </div>
+  </div>
+</section>
 
-    <section class="card" aria-labelledby="settingsTitle">
-      <h2 id="settingsTitle">Accessibility Settings</h2>
+<section class="screen" id="sign">
+  <div class="card">
+    <button class="btn back">← Back</button>
+    <h2>Sign & Communicate</h2>
 
-      <button onclick="toggleContrast()">
-        High Contrast
-      </button>
+    <div class="status">
+      <strong>Prototype note:</strong>
+      This version does not recognise live signing or automatically
+      translate sign language. Accurate translation requires verified
+      examples and a specialist model.
+    </div>
 
-      <button onclick="toggleDarkMode()">
-        Dark Mode
-      </button>
+    <label class="field" for="signLanguage">
+      Preferred sign language
+      <select id="signLanguage">
+        <option>Indian Sign Language (ISL)</option>
+        <option>American Sign Language (ASL)</option>
+        <option>British Sign Language (BSL)</option>
+        <option>Other / not sure</option>
+      </select>
+    </label>
 
-      <p>These settings help users choose a comfortable display.</p>
-    </section>
-  </main>
+    <h3>Useful phrases</h3>
+    <div class="tiles">
+      <button class="tile signPhrase" data-msg="Please help me.">Please help me</button>
+      <button class="tile signPhrase" data-msg="Please call an interpreter.">Call an interpreter</button>
+      <button class="tile signPhrase" data-msg="I need medical assistance.">Medical assistance</button>
+    </div>
 
-  <footer>
-    <p>Geana — Making communication more accessible.</p>
-  </footer>
+    <div class="message" id="signPreview">Please help me.</div>
+    <button class="btn primary" id="signAudio">🔊 Speak selected phrase</button>
+  </div>
+</section>
 
-  <script>
-    let displaySize = "22px";
+<section class="screen" id="settings">
+  <div class="card">
+    <button class="btn back">← Back</button>
+    <h2>Accessibility Settings</h2>
 
-    function showQuickMessage(message) {
-      document.getElementById("message").value = message;
-      showMessage();
-    }
+    <div class="field">
+      Button and icon size
+      <div class="options" data-setting="size">
+        <button class="btn" data-value="normal">Normal</button>
+        <button class="btn selected" data-value="large">Large</button>
+        <button class="btn" data-value="xlarge">Extra large</button>
+      </div>
+    </div>
 
-    function addPhrase(phrase) {
-      const input = document.getElementById("message");
+    <div class="field">
+      Button spacing
+      <div class="options" data-setting="spacing">
+        <button class="btn" data-value="compact">Compact</button>
+        <button class="btn selected" data-value="normal">Comfortable</button>
+        <button class="btn" data-value="wide">Wide</button>
+      </div>
+    </div>
 
-      input.value = input.value.trim()
-        ? input.value.trim() + " " + phrase
-        : phrase;
+    <div class="field">
+      Text size
+      <div class="options" data-setting="text">
+        <button class="btn" data-value="normal">Normal</button>
+        <button class="btn selected" data-value="large">Large</button>
+        <button class="btn" data-value="xlarge">Extra large</button>
+      </div>
+    </div>
 
-      input.focus();
-    }
+    <label class="field" for="interaction">
+      Interaction mode
+      <select id="interaction">
+        <option value="tap">Tap</option>
+        <option value="release">Release to select</option>
+        <option value="hold">Hold to select</option>
+      </select>
+    </label>
 
-    function setTextSize(size) {
-      displaySize = size;
+    <label class="field" for="holdDuration">
+      Hold duration
+      <input id="holdDuration" type="range" min="500" max="2000" step="250" value="1000">
+      <span id="holdLabel">1 second</span>
+    </label>
 
-      document.getElementById("preview").style.fontSize =
-        displaySize;
+    <label class="field" for="retention">
+      Message retention
+      <select id="retention">
+        <option value="0">Until dismissed</option>
+        <option value="15">15 seconds</option>
+        <option value="30">30 seconds</option>
+        <option value="60">60 seconds</option>
+      </select>
+    </label>
 
-      document.getElementById("actionStatus").textContent =
-        "Display text size updated.";
-    }
+    <label class="field" for="theme">
+      Display theme
+      <select id="theme">
+        <option value="standard">Standard</option>
+        <option value="high">High contrast</option>
+        <option value="dark">Dark mode</option>
+      </select>
+    </label>
 
-    function showMessage() {
-      const message =
-        document.getElementById("message").value.trim();
+    <label class="field" for="speechLanguage">
+      Speech language
+      <select id="speechLanguage">
+        <option value="en-IN">English (India)</option>
+        <option value="hi-IN">Hindi</option>
+        <option value="ta-IN">Tamil</option>
+        <option value="te-IN">Telugu</option>
+        <option value="kn-IN">Kannada</option>
+        <option value="ml-IN">Malayalam</option>
+      </select>
+    </label>
 
-      const preview = document.getElementById("preview");
+    <div class="rowcheck">
+      <input id="speechEnabled" type="checkbox" checked>
+      <label for="speechEnabled">Enable text-to-speech</label>
+    </div>
 
-      preview.textContent = message ||
-        "Please enter a message first.";
+    <div class="btnrow">
+      <button class="btn primary" id="applySettings">Apply settings</button>
+      <button class="btn" id="resetSettings">Reset defaults</button>
+    </div>
 
-      preview.style.fontSize = displaySize;
+    <div class="status" id="settingsStatus">
+      Settings apply to this browser session.
+    </div>
+  </div>
+</section>
 
-      document.getElementById("actionStatus").textContent =
-        message ? "Message displayed successfully." :
-        "Your message is empty.";
-    }
+<nav class="nav" aria-label="Main navigation">
+  <button class="active" data-go="home"><span>⌂</span>Home</button>
+  <button data-go="builder"><span>▤</span>Messages</button>
+  <button data-go="sign"><span>🤟</span>Sign</button>
+  <button data-go="settings"><span>⚙</span>Settings</button>
+</nav>
 
-    function speakMessage() {
-      const message =
-        document.getElementById("message").value.trim();
+<p class="notice">
+  Geana is a hackathon prototype. It cannot guarantee emergency-call
+  connection or caregiver message delivery.
+</p>
+</main>
 
-      if (!message) {
-        document.getElementById("actionStatus").textContent =
-          "Please enter a message to read aloud.";
-        return;
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const screens = [...document.querySelectorAll('.screen')];
+
+let cfg = {
+  size:'large',
+  spacing:'normal',
+  text:'large',
+  retention:'0',
+  theme:'standard',
+  speechLanguage:'en-IN',
+  speechEnabled:true,
+  interaction:'tap',
+  holdDuration:1000
+};
+
+let buildParts = [];
+
+function go(id) {
+  screens.forEach(s => s.classList.toggle('active',s.id===id));
+  document.querySelectorAll('.nav [data-go]').forEach(b =>
+    b.classList.toggle('active',b.dataset.go===id)
+  );
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.addEventListener('click',e => {
+  const b = e.target.closest('[data-go]');
+  if(b) { go(b.dataset.go); return; }
+  if(e.target.closest('.back')) go('home');
+});
+
+$('settingsTop').onclick = () => go('settings');
+
+function say(text) {
+  if(!cfg.speechEnabled) {
+    $('voiceStatus').textContent='Speech output is turned off in settings.';
+    return;
+  }
+
+  if(!('speechSynthesis' in window)) {
+    $('voiceStatus').textContent='Text-to-speech is not supported here.';
+    return;
+  }
+
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = cfg.speechLanguage;
+  speechSynthesis.speak(u);
+}
+
+function updatePreview(input,preview) {
+  const t = $(input).value.trim() || ' ';
+  $(preview).textContent = t;
+  return t;
+}
+
+document.querySelectorAll('.quick').forEach(b => {
+  b.onclick = () => {
+    $('helpText').value = b.dataset.msg;
+    updatePreview('helpText','helpPreview');
+    go('help');
+  };
+});
+
+$('showHelp').onclick = () =>
+  updatePreview('helpText','helpPreview');
+
+$('audioHelp').onclick = () =>
+  say(updatePreview('helpText','helpPreview'));
+
+$('showSilent').onclick = () =>
+  updatePreview('silentText','silentPreview');
+
+$('audioSilent').onclick = () =>
+  say(updatePreview('silentText','silentPreview'));
+
+document.querySelectorAll('.phrase').forEach(b => {
+  b.onclick = () => {
+    $('silentText').value = b.dataset.msg;
+    updatePreview('silentText','silentPreview');
+  };
+});
+
+$('careCall').onclick = () => {
+  const n = $('carePhone').value.trim();
+
+  if(!n) {
+    $('careStatus').textContent='Enter a trusted contact phone number first.';
+    return;
+  }
+
+  if(!/^[+0-9 ()-]{5,25}$/.test(n)) {
+    $('careStatus').textContent='Please check the phone number format.';
+    return;
+  }
+
+  location.href = 'tel:' + n.replace(/[ ()-]/g,'');
+};
+
+function getCareSMSDetails() {
+  const n = $('carePhone').value.trim();
+
+  if(!n) {
+    $('careStatus').textContent='Enter a trusted contact phone number first.';
+    return null;
+  }
+
+  if(!/^[+0-9 ()-]{5,25}$/.test(n)) {
+    $('careStatus').textContent='Please check the phone number format.';
+    return null;
+  }
+
+  return {
+    number:n.replace(/[ ()-]/g,''),
+    body:$('careMessage').value.trim()
+  };
+}
+
+$('careSMS').onclick = () => {
+  const details = getCareSMSDetails();
+  if(!details) return;
+
+  const isApple = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const separator = isApple ? '&' : '?';
+
+  const smsUrl = 'sms:' + details.number +
+    separator + 'body=' + encodeURIComponent(details.body);
+
+  $('careStatus').textContent =
+    'Opening your messaging app. Review the message and tap Send.';
+
+  window.location.href = smsUrl;
+};
+
+$('careCopySMS').onclick = async () => {
+  const details = getCareSMSDetails();
+  if(!details) return;
+
+  if(!details.body) {
+    $('careStatus').textContent='Type a message first, then copy it.';
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(details.body);
+    $('careStatus').textContent =
+      'Message copied. Open your messaging app, paste it, and tap Send.';
+  } catch {
+    $('careMessage').focus();
+    $('careMessage').select();
+    $('careStatus').textContent =
+      'Copy the selected message and paste it into your SMS app.';
+  }
+};
+
+document.querySelectorAll('[data-build]').forEach(b => {
+  b.onclick = () => {
+    if(!buildParts.includes(b.dataset.build))
+      buildParts.push(b.dataset.build);
+
+    $('buildText').value = buildParts.join('. ') + '.';
+    $('buildPreview').textContent = $('buildText').value;
+  };
+});
+
+$('buildText').addEventListener('input',() => {
+  $('buildPreview').textContent =
+    $('buildText').value || 'Your message will appear here.';
+});
+
+let messageTextSize = 'medium';
+
+function setMessageTextSize(size) {
+  messageTextSize = size;
+
+  const sizes = {
+    small:'1rem',
+    medium:'1.35rem',
+    large:'1.9rem',
+    xlarge:'2.5rem'
+  };
+
+  const preview = $('buildPreview');
+  preview.style.fontSize = sizes[size] || sizes.medium;
+  preview.style.lineHeight = size === 'xlarge' ? '1.3' : '1.45';
+
+  document.querySelectorAll('[data-display-size]').forEach(b => {
+    const chosen = b.dataset.displaySize === size;
+    b.classList.toggle('selected',chosen);
+    b.setAttribute('aria-pressed',String(chosen));
+  });
+}
+
+document.querySelectorAll('[data-display-size]').forEach(b => {
+  b.addEventListener('click',() => setMessageTextSize(b.dataset.displaySize));
+});
+
+$('buildShow').onclick = () => {
+  updatePreview('buildText','buildPreview');
+
+  $('displaySizeControls').scrollIntoView({
+    behavior:'smooth',
+    block:'center'
+  });
+
+  const sec = Number(cfg.retention);
+  clearTimeout(window.geanaTimer);
+
+  if(sec > 0) {
+    $('retentionStatus').textContent =
+      'Message will remain for ' + sec + ' seconds.';
+
+    window.geanaTimer = setTimeout(() => {
+      $('buildPreview').textContent =
+        'Display time ended. Reopen or rebuild your message.';
+    },sec * 1000);
+  } else {
+    $('retentionStatus').textContent =
+      'Message stays visible until you dismiss or replace it.';
+  }
+};
+
+$('buildAudio').onclick = () =>
+  say(updatePreview('buildText','buildPreview'));
+
+$('buildCopy').onclick = async () => {
+  const t = $('buildText').value;
+
+  if(!t) {
+    $('retentionStatus').textContent='Write or select a message first.';
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(t);
+    $('retentionStatus').textContent='Message copied.';
+  } catch {
+    $('buildText').focus();
+    $('buildText').select();
+    $('retentionStatus').textContent='Select and copy the highlighted message.';
+  }
+};
+
+$('buildClear').onclick = () => {
+  buildParts = [];
+  $('buildText').value = '';
+  $('buildPreview').textContent = 'Your message will appear here.';
+  clearTimeout(window.geanaTimer);
+  $('retentionStatus').textContent = 'Message cleared.';
+};
+
+let signText = 'Please help me.';
+
+document.querySelectorAll('.signPhrase').forEach(b => {
+  b.onclick = () => {
+    signText = b.dataset.msg;
+    $('signPreview').textContent = signText;
+  };
+});
+
+$('signAudio').onclick = () => say(signText);
+
+$('voiceBtn').onclick = () => {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if(!SR) {
+    $('voiceStatus').textContent =
+      'Voice input is not supported in this browser. Use buttons or type instead.';
+    return;
+  }
+
+  try {
+    const rec = new SR();
+    rec.lang = cfg.speechLanguage;
+    rec.interimResults = false;
+    $('voiceStatus').textContent = 'Listening… allow microphone access if asked.';
+
+    rec.onresult = ev => {
+      const heard = ev.results[0][0].transcript;
+      const t = heard.toLowerCase();
+
+      $('voiceStatus').textContent = 'Heard: “' + heard + '”';
+
+      if(t.includes('emergency') || t.includes('call 112'))
+        go('emergency');
+      else if(t.includes('caregiver'))
+        go('caregiver');
+      else if(t.includes('cannot speak'))
+        go('silent');
+      else if(t.includes('build message'))
+        go('builder');
+      else {
+        $('helpText').value = heard;
+        updatePreview('helpText','helpPreview');
+        go('help');
       }
+    };
 
-      if (!("speechSynthesis" in window)) {
-        document.getElementById("actionStatus").textContent =
-          "Text-to-speech is not supported in this browser.";
-        return;
-      }
+    rec.onerror = ev => {
+      $('voiceStatus').textContent =
+        'Voice input unavailable (' + ev.error + '). Try buttons or typing.';
+    };
 
-      window.speechSynthesis.cancel();
+    rec.start();
+  } catch {
+    $('voiceStatus').textContent =
+      'Could not start voice input. Check microphone permission.';
+  }
+};
 
-      const speech = new SpeechSynthesisUtterance(message);
-      speech.lang = "en-IN";
+document.querySelectorAll('.options[data-setting]').forEach(group => {
+  group.addEventListener('click',e => {
+    const b = e.target.closest('[data-value]');
+    if(!b) return;
 
-      window.speechSynthesis.speak(speech);
+    group.querySelectorAll('button').forEach(x =>
+      x.classList.toggle('selected',x===b)
+    );
 
-      document.getElementById("actionStatus").textContent =
-        "Reading your message aloud.";
+    cfg[group.dataset.setting] = b.dataset.value;
+  });
+});
+
+$('holdDuration').oninput = () => {
+  $('holdLabel').textContent =
+    (Number($('holdDuration').value)/1000) + ' seconds';
+};
+
+function apply() {
+  cfg.retention = $('retention').value;
+  cfg.theme = $('theme').value;
+  cfg.speechLanguage = $('speechLanguage').value;
+  cfg.speechEnabled = $('speechEnabled').checked;
+  cfg.interaction = $('interaction').value;
+  cfg.holdDuration = Number($('holdDuration').value);
+
+  document.body.classList.toggle('dark',cfg.theme==='dark');
+  document.body.classList.toggle('high',cfg.theme==='high');
+
+  document.documentElement.style.setProperty(
+    '--size',
+    cfg.text==='normal' ? 1 : cfg.text==='large' ? 1.15 : 1.3
+  );
+
+  document.documentElement.style.setProperty(
+    '--gap',
+    cfg.spacing==='compact' ? '5px' :
+    cfg.spacing==='wide' ? '18px' : '12px'
+  );
+
+  document.querySelectorAll('.action').forEach(b => {
+    b.style.minHeight =
+      cfg.size==='normal' ? '125px' :
+      cfg.size==='large' ? '150px' : '180px';
+
+    b.style.padding = cfg.size==='xlarge' ? '22px' : '18px';
+  });
+
+  $('settingsStatus').textContent =
+    'Settings applied to this page. You can change them any time.';
+}
+
+$('applySettings').onclick = apply;
+
+setMessageTextSize('medium');
+
+$('resetSettings').onclick = () => {
+  cfg = {
+    size:'large',
+    spacing:'normal',
+    text:'large',
+    retention:'0',
+    theme:'standard',
+    speechLanguage:'en-IN',
+    speechEnabled:true,
+    interaction:'tap',
+    holdDuration:1000
+  };
+
+  $('retention').value = '0';
+  $('theme').value = 'standard';
+  $('speechLanguage').value = 'en-IN';
+  $('speechEnabled').checked = true;
+  $('interaction').value = 'tap';
+  $('holdDuration').value = '1000';
+  $('holdLabel').textContent = '1 second';
+
+  apply();
+};
+
+let holdTimer = null;
+let holdTriggered = false;
+
+document.querySelectorAll('.action[data-go]').forEach(b => {
+  b.addEventListener('pointerdown',() => {
+    holdTriggered = false;
+
+    if(cfg.interaction==='hold') {
+      holdTimer = setTimeout(() => {
+        holdTriggered = true;
+        go(b.dataset.go);
+      },cfg.holdDuration);
     }
+  });
 
-    async function copyMessage() {
-      const message =
-        document.getElementById("message").value.trim();
+  ['pointerup','pointerleave','pointercancel'].forEach(ev =>
+    b.addEventListener(ev,() => clearTimeout(holdTimer))
+  );
 
-      if (!message) {
-        document.getElementById("actionStatus").textContent =
-          "Please enter a message to copy.";
-        return;
-      }
-
-      try {
-        await navigator.clipboard.writeText(message);
-
-        document.getElementById("actionStatus").textContent =
-          "Message copied.";
-      } catch (error) {
-        document.getElementById("actionStatus").textContent =
-          "Copy is unavailable. Please select and copy the text manually.";
-      }
+  b.addEventListener('click',e => {
+    if(cfg.interaction==='hold') {
+      if(!holdTriggered) e.preventDefault();
+    } else if(cfg.interaction==='release') {
+      go(b.dataset.go);
     }
+  });
+});
 
-    function clearMessage() {
-      document.getElementById("message").value = "";
-      document.getElementById("preview").textContent =
-        "Your message will appear here.";
-
-      document.getElementById("actionStatus").textContent =
-        "Message cleared.";
-    }
-
-    function toggleContrast() {
-      document.body.classList.toggle("high-contrast");
-    }
-
-    function toggleDarkMode() {
-      document.body.classList.toggle("dark-mode");
-    }
-
-    function callEmergency() {
-      const confirmed = confirm(
-        "Open your phone app to call India's emergency number 112?"
-      );
-
-      if (confirmed) {
-        window.location.href = "tel:112";
-      }
-    }
-  </script>
+})();
+</script>
 </body>
 </html>
